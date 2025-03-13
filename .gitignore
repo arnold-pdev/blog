@@ -37,6 +37,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# development logs
+next-env.d.ts
+logs.json
+
 # local env files
 .env.local
 .env.development.local

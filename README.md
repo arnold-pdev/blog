@@ -63,14 +63,15 @@ Go ahead and open up VSCode.
 First, we are going to need to install some extensions.
 
 Download the `Dev Containers` and `Docker` extensions.
-+ ![required extensions](public/static/images/readme/components_reqd.png)
+
+- ![required extensions](public/static/images/readme/components_reqd.png)
 
 > ⚠️**NOTE**⚠️
-> These extension installations are *local*, so they are available to all projects that you open in the future. When we create a container, we can also install extensions inside of the container so that they remain tied only to the project itself. There are many other useful extensions available, and it's worth being cognizant of what should be installed locally versus in your project's container.
+> These extension installations are _local_, so they are available to all projects that you open in the future. When we create a container, we can also install extensions inside of the container so that they remain tied only to the project itself. There are many other useful extensions available, and it's worth being cognizant of what should be installed locally versus in your project's container.
 
-You can optionally download these at this time. Keep in mind these are *local* extensions installations.
+You can optionally download these at this time. Keep in mind these are _local_ extensions installations.
 
- + ![optional extensions](public/static/images/readme/components_optional.png)
+- ![optional extensions](public/static/images/readme/components_optional.png)
 
 Once we clone our project into a container, we'll check back in on the extension. The container config file specifies a few useful extensions to automatically install inside of the container.
 
@@ -82,14 +83,14 @@ Let's navigate to the template repo. Theoretically you are already here but to f
 
 We want to create a new repo from this template. Do so by clicking `Use this template` and selecting `Create a new repository`
 
- ![create repo from template](public/static/images/readme/createrepofromtemplate.png)
+![create repo from template](public/static/images/readme/createrepofromtemplate.png)
 
- Next, you will choose a name for your repo and add a description if you'd like. By the way, your repo name will not have any impact on your domain name, that's separate.
+Next, you will choose a name for your repo and add a description if you'd like. By the way, your repo name will not have any impact on your domain name, that's separate.
 
-  ![create repo github](public/static/images/readme/createrepo.png)
+![create repo github](public/static/images/readme/createrepo.png)
 
 > ⚠️**NOTE**⚠️
->  You can also choose whether you want this repo to be Public or Private. I would advise to set yours to private, but it's up to you. We will not be using Github Pages (which requires a Public repo), rather we will be using Vercel to deploy, which can still deploy the web application from a Private repo (we have to link our Vercel account to Github either way).
+> You can also choose whether you want this repo to be Public or Private. I would advise to set yours to private, but it's up to you. We will not be using Github Pages (which requires a Public repo), rather we will be using Vercel to deploy, which can still deploy the web application from a Private repo (we have to link our Vercel account to Github either way).
 
 Once you are ready, click `Create repository`, and wait until you see that your new repo has been created.
 
@@ -99,9 +100,9 @@ Let's move back over to VSCode.
 
 #### Sign into Github
 
-First, we need to be sure we are signed into our Github account on VSCode. In VSCode, click on the silhouette avatar in the bottom left corner. It should have a badge with a `1` on it.  
+First, we need to be sure we are signed into our Github account on VSCode. In VSCode, click on the silhouette avatar in the bottom left corner. It should have a badge with a `1` on it.
 
-  ![github signin vscode](public/static/images/readme/githubvscodesignin.png)
+![github signin vscode](public/static/images/readme/githubvscodesignin.png)
 
 It should bring up your browser to sign in, and just follow the prompts until you are signed into Github on VSCode.
 
@@ -109,17 +110,18 @@ It should bring up your browser to sign in, and just follow the prompts until yo
 > Here's an example of "I know there is a better way to do this but this works" for me, so if you know an easier way to sign in let me know! Truthfully, for what we are doing you will inevitably get a prompt to sign into Github.
 
 ### Clone Repo into a VSCode project
+
 Once we are signed into Github, we can clone our repo in a container on our machine using VSCode.
 
 Use `F1` on your keyboard to pull up `Show all commands`, which is essentially just a search bar for built-in commands for VSCode. Type in `Dev Containers: Clone Repository in Container Volume` and click when you see it.
 
-  ![clone repo](public/static/images/readme/clonerepo.png)
+![clone repo](public/static/images/readme/clonerepo.png)
 
-Once you click, you should see `Clone a repository from Github in a Container Volume`, click, then a list of your Github repos should present itself. Find the repo we just made, click, and when `main` pops up, click again. 
+Once you click, you should see `Clone a repository from Github in a Container Volume`, click, then a list of your Github repos should present itself. Find the repo we just made, click, and when `main` pops up, click again.
 
 You're off to the races!
 
-This part may take a while.  If you are curious what is chugging in the background, you should get prompted to open the terminal to monitor the installation.
+This part may take a while. If you are curious what is chugging in the background, you should get prompted to open the terminal to monitor the installation.
 
 > 🚨**WARNING**🚨
 > I have encountered some issues in VSCode with user credential authentication when running the cloning operation. Please follow the instructions at [this Stack Overflow post](https://stackoverflow.com/questions/68775869/message-support-for-password-authentication-was-removed) to generate a Github token that is used in place of your password instead of your normal Github login password. Be sure to store it in whatever password manager your operating system uses in order to not have to re-enter it whenever you are running any actions that use the Github API (which you will be doing quite a bit).
@@ -128,21 +130,21 @@ This part may take a while.  If you are curious what is chugging in the backgrou
 
 Once your container volume is fully built, the web app is configured to automatically run `yarn dev` to start running your `▲ Next.js` app in your container. You'll see something like this in your terminal.
 
-  ![yarn dev](public/static/images/readme/yarndev.png)
+![yarn dev](public/static/images/readme/yarndev.png)
 
 This will by default attempt to run the app locally using port `3000`, and you can run the site in development mode by navigating to `http://localhost:3000` in a browser on your machine locally.
 
 If you navigate to `http://localhost:3000` and are able to see this:
 
-  ![yarn dev](public/static/images/readme/devsite.png)
+![yarn dev](public/static/images/readme/devsite.png)
 
 Then congratulations! You are ready to start developing your site!
 
 # Developing your site
 
-We are going to switch over to a blog post now.  Scroll down on the landing page to the `Latest` section and find the post entitled `UA SDS Blog Development & Maintenance`.
+We are going to switch over to a blog post now. Scroll down on the landing page to the `Latest` section and find the post entitled `UA SDS Blog Development & Maintenance`.
 
- ![yarn dev](public/static/images/readme/blogdevmaintenance.png)
+![yarn dev](public/static/images/readme/blogdevmaintenance.png)
 
 If you are having issues check these steps. To make sure your `dev` server is running, and use your favorite browser to navigate to the `localhost` port that the server is running on. You should be able to see the `http` port link under your `yarn dev` command output, it looks like this:
 

@@ -1,10 +1,10 @@
 /** @type {import("pliny/config").PlinyConfig } */
 const siteMetadata = {
-  title: 'UA SDS GIDP Blog',
-  author: 'Wilbur T. Wildcat',
-  headerTitle: 'Wilbur T. Wildcat Blog',
+  title: 'Hi :)',
+  author: 'Andrew Arnold',
+  headerTitle: 'arnold.pdev',
   description:
-    'A blog portfolio template for University of Arizona Statistics and Data Science GIDP Students',
+    'Website for Andrew Arnold, engineer and applied mathematician.',
   language: 'en-us',
   theme: 'system', // system, dark or light
   siteUrl: 'https://tailwind-nextjs-starter-blog.vercel.app',
@@ -24,6 +24,7 @@ const siteMetadata = {
   locale: 'en-US',
   // set to true if you want a navbar fixed to the top
   stickyNav: true,
+  useIconLinks: true, // Set to true for icon-based navigation
   analytics: {
     // If you want to use an analytics provider you have to add it to the
     // content security policy in the `next.config.js` file.

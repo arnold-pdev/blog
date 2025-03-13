@@ -50,13 +50,12 @@ const SDSHero = () => {
           </div>
           <div className="flex flex-col gap-6 py-4 font-bold">
             <h3 className="!my-0 text-3xl font-extrabold leading-9 tracking-tight text-primary-800 dark:text-primary-900 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
-              Hi, I'm Wilbur
+              Hi, I'm Andrew
             </h3>
             <p className="text-primary-DEFAULT text-2xl leading-[1.4] opacity-65">
-              Welcome to my online portfolio! I keep all of my latest projects, CV, and blog posts
-              here. Bear Down!
+              I primarily blog about applied mathematics and probability, both beautiful theory and real-world projects. Blogging is a fun hobby for me, a healthier way to engage with the Internet than the default option. I aim to convince the reader that thinking hard can be rewarding!
             </p>
-            <p>
+            {/* <p>
               <Image
                 src={'/static/images/logo.png'}
                 alt="SDS"
@@ -64,7 +63,7 @@ const SDSHero = () => {
                 height={10}
                 className="w-275 h-10 justify-center"
               />
-            </p>
+            </p> */}
           </div>
         </Craft.Container>
       </motion.div>

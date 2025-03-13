@@ -1,0 +1,136 @@
+---
+title: 'Stochastic Control: Part 1'
+date: '2024-10-20'
+tags: ['optimal control', 'stochastic processes']
+draft: false
+summary: This is the first part of a series of posts on stochastic control. In this post, we will introduce the basic concepts of control theory and the Bellman equation.
+---
+
+A control problem formalizes the challenge of **steering** a **system** in an **optimal** way. This formalization requires a mathematical specification of each one of the bolded terms:
+
+- a state space, $$\color{red}{\mathcal{X}}$$, which includes all the possible states, $$x$$, a system can occupy;
+
+- a space of admissible controls, $$\color{green}{\mathcal{U}}$$, which might be expressed in part through inequality constraints;
+
+- a dynamical law which describes how the state evolves over time under the influence of the control;
+
+- an objective, $$C$$, which is what we aim to optimize.
+
+Lastly, real control problems have an additional component,
+
+- an observation space $$\mathcal Y$$ with observations $$y$$ that depend on the state.
+
+While the state variable is constrained to abide by the dynamical law, we are free to specify a control that is a function of the time and state (or, in the realistic partially-observed context, time and observations). We call such a function a control policy, $$\mathbf U: \mathcal Y \times \mathcal T\to \mathcal U$$, which will yield a state trajectory, $$\mathbf X: \mathcal T\to \mathcal X$$. If $$U$$ depends on observations, it is said to be a feedback or closed-loop control policy. If it does not, it is said to be a feedforward or open-loop control policy.
+
+The objective function will in general be some function of the trajectories and control policies, $$C: \mathcal{X}\times\mathcal{U}\times\mathcal{T}\to\mathbb{R}$$, where $$\mathcal{X}$$ is the state space, $$\mathcal{U}$$ is the control space, and $$\mathcal{T}$$ is the time interval. 
+
+In this post, we will begin looking at some methods for finding optimal control policies in continuous time—$$\mathcal T = [0,T]$$—and space—specifically, $$\mathcal X = \mathbb R$$. A rather general subclass of objective functions in continuous time are those that can be expressed as the integral of a running cost dependent only on the current state and control, plus a finite terminal cost dependent on the final state:
+$$
+\begin{align*}
+C(\mathbf X, \mathbf U)&=c_T(X_T) + \int_0^Tc_t(X_t,U_t)dt. \\
+\end{align*}
+$$
+A problem with such an objective function is said to have optimal substructure. Equivalently, one could say that it satisfies the Bellman property of optimality. You will likely find that most control problems you encounter can be made to fit into this framework.
+
+## An illustrating example: Steering with quadratic costs
+Let us take the state space to be $$\mathcal{X}=\mathbb{R}$$ and the control space to be the same, $$\mathcal{U}=\mathbb{R}$$, and our dynamical law to be the simple first-order differential equation
+
+$$
+\begin{align}
+dX_t = U_t dt
+\end{align}
+$$
+
+over a fixed time interval $$\mathcal T=[0,T]$$. The cost of our control policy will be given by quadratic functions; i.e.,
+
+$$
+C(\mathbf X, \mathbf U)=c_TX_T^2 + \int_0^Tc_uU_t^2dt
+$$
+
+for some constants $$c_T,c_u>0$$. To give some physical intuition, we can think of $$X_t$$ as the velocity of a car and $$U_t$$ as its acceleration. The cost function penalizes both the final velocity of the car and its acceleration throughout the time interval.
+
+## A variational approach
+If you have some familiarity with the calculus of variations (CoV), you may look at this problem with its differential dynamical constraint $$(1)$$ and realize that the methods of CoV can be used to find a solution. We can incorporate the dynamical constraint directly into our cost function through a Lagrange multiplier function, $$\lambda: \mathcal{T}\to\mathbb{R}$$, yielding an augmented cost function
+
+$$
+C^+(\mathbf X, \mathbf U, \lambda)=c_Tx_T^2 + \int_0^T\left[c_u u_t^2+\lambda_t\left(\frac{dx}{dt}-u_t\right)\right]dt.
+$$
+
+It's hard to overstate the utility of Lagrange multipliers. They replace a constrained optimization problem with an equivalent unconstrained one, meaning we can consider each of our arguments—$$\mathbf X$$, $$\mathbf U$$, and the newly introduced $$\lambda$$—independently.
+
+In the variational framework, we make use of the fact our objective is a continuous and differentiable functional to find stationary points, those realizations of $$(\mathbf X, \mathbf U,\lambda)$$ for which some small perturbation does not change the value of our objective. Mathematically, we're seeking $$(\mathbf X^*, \mathbf U^*,\lambda^*)$$ such that
+$$
+\begin{align}
+\lim_{\varepsilon\to 0}\varepsilon^{-1}\left[C^+(\mathbf X^*+\varepsilon\mathbf X, \mathbf U^*+\varepsilon\mathbf U, \lambda^*+\varepsilon\lambda)-C^+(\mathbf X^*, \mathbf U^*,\lambda^*)\right] = 0
+\end{align}
+$$
+for *any* admissible $$\mathbf X$$, $$\mathbf U$$, and $$\lambda$$. By admissible, I mean that there must exist some $$\varepsilon > 0$$ such that $$\mathbf X^*+\varepsilon\mathbf X$$, $$\mathbf U^*+\varepsilon\mathbf U$$, and $$\lambda^*+\varepsilon\lambda$$ are themselves legitimate functions to consider.
+
+That each argument can be varied independently means we can hold two arguments fixed and vary the third. This yields three equations that must be satisfied for stationarity to hold:
+
+$$
+\begin{align}
+\delta_{\mathbf X}C^+&: \enspace d\lambda_t^*=0, \enspace \lambda_T^*=-2c_TX_T^* \\
+\delta_{\mathbf U} C^+&: \enspace U_t^* = -\lambda_t^*/2c_u \\
+\delta_\lambda C^+&: \enspace dX_t^*=U_t^*dt
+\end{align}
+$$
+
+<Toggle title="Derivation of (3)">
+    $$
+    \begin{align*}
+    \delta_\mathbf{X}C^+&=\lim_{\varepsilon\to 0}\varepsilon^{-1}\left[C^+(\mathbf X+\varepsilon\delta \mathbf X,u,t)-C^+(x,u,t)\right]\\
+    &=\lim_{\varepsilon\to 0}\varepsilon^{-1}\Big[\int_0^T\left[c_uu^2+\lambda\left(\frac{d(x+\varepsilon\delta x)}{dt}-u\right)\right]dt + c_T(x(T)+\varepsilon\delta x_T)^2\\
+    &\quad\quad\quad\quad-\int_0^T\left[c_uu^2+\lambda\left(\frac{dx}{dt}-u\right)\right]dt + c_Tx(T)^2\Big]\\
+    &=\lim_{\varepsilon\to 0}\varepsilon^{-1}\left[\int_0^T\left[\lambda\left(\frac{d}{dt}(\varepsilon\delta x)\right)\right]dt + 2\varepsilon c_Tx(T)\delta x_T + \varepsilon^2c_T(\delta x_T)^2 \right]\\
+    &=\lim_{\varepsilon\to 0}\varepsilon^{-1}\left[-\int_0^T\left[\left(\frac{d\lambda}{dt}\left(\varepsilon\delta x\right)\right)\right]dt + \varepsilon\left[ \lambda\delta x \right]_0^T + 2\varepsilon c_Tx(T)\delta x_T \right]\\
+    &=-\int_0^T\left[\left(\frac{d\lambda}{dt}\left(\delta x\right)\right)\right]dt + \left[ \lambda(T) + 2 c_Tx(T)\right]\delta x_T \\
+    \end{align*}
+    $$
+</Toggle>
+
+<Toggle title="Derivation of (4)">
+    $$
+    \begin{align*}
+    \delta_xC^+&=\lim_{\varepsilon\to 0}\varepsilon^{-1}\left[C^+(x+\varepsilon\delta x,u,t)-C^+(x,u,t)\right]\\
+    &=\lim_{\varepsilon\to 0}\varepsilon^{-1}\Big[\int_0^T\left[c_uu^2+\lambda\left(\frac{d(x+\varepsilon\delta x)}{dt}-u\right)\right]dt + c_T(x(T)+\varepsilon\delta x_T)^2\\
+    &\quad\quad\quad\quad-\int_0^T\left[c_uu^2+\lambda\left(\frac{dx}{dt}-u\right)\right]dt + c_Tx(T)^2\Big]\\
+    &=\lim_{\varepsilon\to 0}\varepsilon^{-1}\left[\int_0^T\left[\lambda\left(\frac{d}{dt}(\varepsilon\delta x)\right)\right]dt + 2\varepsilon c_Tx(T)\delta x_T + \varepsilon^2c_T(\delta x_T)^2 \right]\\
+    &=\lim_{\varepsilon\to 0}\varepsilon^{-1}\left[-\int_0^T\left[\left(\frac{d\lambda}{dt}\left(\varepsilon\delta x\right)\right)\right]dt + \varepsilon\left[ \lambda\delta x \right]_0^T + 2\varepsilon c_Tx(T)\delta x_T \right]\\
+    &=-\int_0^T\left[\left(\frac{d\lambda}{dt}\left(\delta x\right)\right)\right]dt + \left[ \lambda(T) + 2 c_Tx(T)\right]\delta x_T \\
+    \end{align*}
+    $$
+</Toggle>
+
+<Toggle title="Derivation of (5)">
+    $$
+    \begin{align*}
+    \delta_xC^+&=\lim_{\varepsilon\to 0}\varepsilon^{-1}\left[C^+(x+\varepsilon\delta x,u,t)-C^+(x,u,t)\right]\\
+    &=\lim_{\varepsilon\to 0}\varepsilon^{-1}\Big[\int_0^T\left[c_uu^2+\lambda\left(\frac{d(x+\varepsilon\delta x)}{dt}-u\right)\right]dt + c_T(x(T)+\varepsilon\delta x_T)^2\\
+    &\quad\quad\quad\quad-\int_0^T\left[c_uu^2+\lambda\left(\frac{dx}{dt}-u\right)\right]dt + c_Tx(T)^2\Big]\\
+    &=\lim_{\varepsilon\to 0}\varepsilon^{-1}\left[\int_0^T\left[\lambda\left(\frac{d}{dt}(\varepsilon\delta x)\right)\right]dt + 2\varepsilon c_Tx(T)\delta x_T + \varepsilon^2c_T(\delta x_T)^2 \right]\\
+    &=\lim_{\varepsilon\to 0}\varepsilon^{-1}\left[-\int_0^T\left[\left(\frac{d\lambda}{dt}\left(\varepsilon\delta x\right)\right)\right]dt + \varepsilon\left[ \lambda\delta x \right]_0^T + 2\varepsilon c_Tx(T)\delta x_T \right]\\
+    &=-\int_0^T\left[\left(\frac{d\lambda}{dt}\left(\delta x\right)\right)\right]dt + \left[ \lambda(T) + 2 c_Tx(T)\right]\delta x_T \\
+    \end{align*}
+    $$
+</Toggle>
+
+Interpreting these stationarity conditions, we see from $$(3)$$ that $$\lambda$$ is constant in time, with $$\lambda_t^*=-2c_TX_T^*$$. Combining this with $$(4)$$, we have that $$\mathbf U^*$$ is also constant in time, with 
+$$
+U_t^*=-\lambda_t^*/2c_u=2c_TX_T^*/2c_u=-\frac{c_T}{c_u}X_T^*.
+$$ 
+Finally, from $$(5)$$, we have that $$\mathbf X^*$$ is affine in time, with 
+$$
+X_t^*=X_0+U_t^*t=X_0-\frac{c_T}{c_u}X_T^*t,
+$$
+which requires that
+$$
+X_T^*=X_0-\frac{c_T}{c_u}X_T^*T \implies
+$$
+Our simple problem has a simple solution: a constant feedforward control policy yielding an affine trajectory.
+
+## The Hamilton-Jacobi-Bellman equation
+
+When the objective has optimal substructure, we can leverage a powerful transformation of our problem into the Hamilton-Jacobi-Bellman (HJB) equation, referred to as such by its attribution to Richard Bellman and its analogy with the Hamilton-Jacobi equation of classical mechanics. Just as the Hamilton-Jacobi equation does, the HJB replaces a variational problem of ordinary differential equations with an equivalent partial differential equation.
+
+
