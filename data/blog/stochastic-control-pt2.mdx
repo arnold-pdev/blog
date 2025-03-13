@@ -1,0 +1,142 @@
+---
+title: 'Stochastic Control: Part 2'
+date: '2024-10-21'
+tags: ['optimal control', 'stochastic processes']
+draft: false
+summary: Discussion of the Cole-Hopf transformation and inequality constraints in stochastic control problems.
+---
+import HeatmapExample from '@/components/plotly/HeatmapExample'
+
+## Cole-Hopf Transformation
+Given a non-linear equation of the form
+$$
+\begin{equation}
+\partial_t J - a\partial_xJ - b(\partial_xJ)^2 + c \partial_{xx}J + \Phi(x,t) = 0, \tag{1}
+\end{equation}
+$$
+the Cole-Hopf transformation provides for us an equivalent linear equation. The transformation is given by
+$$
+\begin{equation}
+\psi(x,t)=\exp\left(-\lambda^{-1}J(x,t)\right), \tag{2a}
+\end{equation}
+$$
+a bijection with inverse 
+$$
+\begin{equation}
+J(x,t)=-\lambda\log(\psi(x,t)), \tag{2b}
+\end{equation}
+$$
+where $\lambda$ is some constant whose value has yet to be determined.
+
+Substituting the transformation $(2b)$ into equation $(1)$, we have 
+$$
+
+$$
+
+## Green's functions of the heat equation (heat kernels)
+### 1. Heat equation over the real line
+$$
+g(x,t;x^\prime,t^\prime) =
+\begin{cases}
+\frac{1}{\sqrt{2\pi \sigma^2(t-t^\prime)}} \exp\left(-\frac{1}{2}\frac{(x-x^\prime)^2}{\sigma^2(t-t^\prime)}\right) \enspace &\text{for } t > t^\prime, \\
+\delta(x-x^\prime) \enspace &\text{for } t = t^\prime,\\
+0 \enspace &\text{for } t < t^\prime.
+\end{cases}
+$$
+for all $x,x^\prime \in \mathbb{R}$. The heat kernel for the real line is a convolution kernel in the state variable $x$, which reflects the translational invariance of the heat equation on the real line. Restricting $t$ to the interval $t > t^\prime$, the heat kernel is again a convolution, reflecting invariance in positive time, but this does not hold over all $t$, as the heat kernel is uniformly zero for $t < t^\prime$. This reflects causality; source terms introduced at time $t^\prime>t$ are not "felt" at the earlier time $t$.
+
+### 2. Heat equation over the half-line, Dirichlet boundary condition
+
+The heat kernel for the right half-line $[a,\infty)$ is the same for $t \leq t^\prime$, and for $t > t^\prime$ we have
+$$
+g_{(a,\infty)}(x,t;x^\prime,t^\prime) =
+\frac{1}{\sqrt{2\pi \sigma^2(t-t^\prime)}}
+\left[
+\exp\left(-\frac{1}{2\sigma^2}\frac{(x-x^\prime)^2}{t-t^\prime}\right) - \exp\left(-\frac{1}{2\sigma^2}\frac{(x+x^\prime-2a)^2}{t-t^\prime}\right)
+\right].
+$$
+This kernel can be obtained by summing two fundamental solutions of the heat equation in a way that one negates the other at the boundary $a$; this is the **method of images**. The kernel in this case is not a convolution kernel in state, as the presence of a boundary condition at a particular location $a$ has broken the translational invariance.
+
+The heat kernel for the left half-line $(-\infty,b]$ is the same, but with opposite sign:
+$$
+g_{(-\infty,b)}(x,t;x^\prime,t^\prime) =
+\frac{-1}{\sqrt{2\pi \sigma^2(t-t^\prime)}}
+\left[
+\exp\left(-\frac{1}{2\sigma^2}\frac{(x-x^\prime)^2}{t-t^\prime}\right) 
+- \exp\left(-\frac{1}{2\sigma^2}\frac{(x+x^\prime-2b)^2}{t-t^\prime}\right)
+\right]
+$$
+
+### 3. Heat equation over the interval, Dirichlet boundary conditions
+
+The heat kernel for an interval $[a,b]$ is obtained by restricting our consideration to fundamental solutions with periodicity $b-a$, and then enforcing the Dirichlet condition at point $a$ through the method of images using two such solutions (equivalently, at point $b$, as restricting ourselves to $(b-a)$-periodic functions has identified the two boundaries).
+
+A $(b-a)$-periodic function can be expressed as an infinite sum of periodically-spaced solutions:
+$$
+\begin{align*}
+\Theta_{b-a}(x,t;x^\prime,t^\prime) 
+&:= \sum_{n\in\mathbf{Z}} g(x+n(b-a),t;x^\prime,t^\prime) \\
+&= \frac{1}{\sqrt{2\pi\sigma^2(t-t^{\prime})}}\sum_{n\in\mathbf{Z}} \exp\left(-\frac{1}{2}\frac{(x-x^\prime -n(b-a))^2}{\sigma^2(t-t^\prime)}\right).
+\end{align*}
+$$
+Alternatively, we can use a Fourier series to find an equivalent expression by evaluating the Fourier transform of the fundamental solution on a discrete set of frequencies corresponding to the periodicity of the interval.
+
+
+With the periodic function in hand, we can enforce the Dirichlet boundary conditions by subtracting the contributions from the images at the boundaries:
+$$
+\begin{align*}
+g_{(a,b)}(x,t;x^\prime,t^\prime) &= \Theta_{b-a}(x,t;x^\prime,t^\prime) - \Theta_{b-a}(x-a,t;x^\prime-a,t^\prime) \\
+&= \Theta_{b-a}(x,t;x^\prime,t^\prime) - \Theta_{b-a}(b-x,t;b-x^\prime,t^\prime).
+\end{align*}
+$$
+
+## Example
+
+Consider the case where the terminal cost is given by some centered quadratic, $C_T(x)=c_T x^2/2$, and the motion is governed by diffusion process $dx = udt + \sigma dB_t$ with a quadratic control cost of $C_u(u)=c_u u^2/2$.
+
+$$
+\psi(x,T) = \exp\left(-\frac{1}{2}\frac{x^2}{\sigma^2c_u/c_T}\right).
+$$
+
+### 1. $\psi(x,t)$ over $(t_2,T]$
+For all times up to $t_2$, the diffusion occurs over the entire real line, and thus is given by a convolution of $\psi_T$ and the heat kernel $g$. The result of the convolution will be a Gaussian centered at $0$, with variance $\lambda/c_T+\sigma^2t$ and integral equal to that of $\psi_T$:
+
+$$\psi_T * g = \sqrt{\frac{c_u }{c_u + c_T(T-t)}}\exp\left(-\frac{1}{2\sigma^2}\frac{c_Tx^2}{c_u+c_T(T-t)}\right).$$
+
+This is an inverse transformation away from something familiar, a solution that we've already derived in not one, but two different ways in the previous blogpost!
+
+
+### 2. $\psi(x,t)$ over $[t_1,t_2]$
+At $t=t_2$, we have a new boundary condition, a homogeneous Dirichlet condition at $x=a$, and a restricted domain of $(a,\infty)$. We discard $\psi(x,t_2)$ for $x<a$ (it having been absorbed at the barrier) and convolve what remains with the heat kernel for the half-line, $g_{(a,\infty)}$:
+
+$$
+\begin{align*}
+(\psi_{t_2}\mathbf{1}_{(a,\infty)}) * g_{(a,\infty)} &= \int_a^\infty g_{(a,\infty)}(x^\prime,t_2;x,t)\psi(x^\prime,t_2)dx^\prime \\
+=\sqrt{\frac{c_u }{2\pi\sigma^2(t_2-t)(c_u + c_T(T-t_2))}}
+\Biggl[
+\int_a^\infty
+&\exp\left(-\frac{1}{2\sigma^2}\left(\frac{(x-x^\prime)^2}{t_2-t}+\frac{c_Tx^{\prime2}}{c_u+c_T(T-t_2)}\right)\right) dx^\prime\\
+- \int_a^\infty&\exp\left(-\frac{1}{2\sigma^2}\left(\frac{(x+x^\prime-2a)^2}{t_2-t}+
+\frac{c_Tx^{\prime2}}{c_u+c_T(T-t_2)}\right)\right) dx^\prime
+\Biggr] \\
+=\sqrt{\frac{c_u(c_u+c_T(T-t))}{c_T(t_2-t)(c_u+c_T(T-t_2)}}
+\Biggl[
+&\exp\left(-\frac{1}{2\sigma^2}\frac{c_Tx^2}{c_u + c_T(T-t)}\right)\int_a^\infty\exp\left(-\frac{1}{2\sigma^2}\right) \\
+-&\exp
+\end{align*}
+$$
+Defining
+$$
+\psi^0(x,t)=\exp( -\frac{1}{2\sigma^2}\frac{c_T}{c_u + c_T(T-t)}x^2) \cdot \text{erf}\left(\sqrt{\frac{c_u + c_T(T-t)}{2\sigma^2(t_2-t)(c_u + c_T(T-t_2))}}\left(a-\frac{c_u+c_T(T-t_2)}{c_u+c_T(T-t)}x\right)\right),
+$$
+we have that
+$$
+\psi(x,t) = \frac{1}{2}\sqrt{\frac{c_u}{c_u + c_T(T-t)}}\left[\psi^0(x,t) - \psi^0(2a-x,t)\right].
+$$
+
+If we want, we can express the integrals over the half-lines in terms of error function, $\text{erf}$:
+
+### 3. $\psi(x,t)$ over $[0,t_1)$
+Once we break past time $t_1$ we are once again in the unrestricted domain of the real line. At the instant $t=t_1$, $\psi$ is zero-valued for $x\leq a$, but it will spread out over the entire real line as time progresses under the action of the heat kernel, $g$.
+
+<HeatmapExample />

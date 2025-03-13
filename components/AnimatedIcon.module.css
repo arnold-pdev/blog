@@ -1,0 +1,36 @@
+.iconContainer {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    /* Fixed container size */
+    width: 32px;
+    height: 32px;
+    /* Prevent content from affecting layout */
+    overflow: hidden;
+}
+
+.imageWrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.visible {
+    display: block;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Ensure all images fill container consistently */
+.iconImage {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}

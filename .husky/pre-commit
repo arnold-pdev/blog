@@ -1,1 +1,9 @@
 npx --no-install lint-staged
+
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Safety first: abort on errors
+set -e
+
+yarn lint-staged --concurrent 1 --no-stash

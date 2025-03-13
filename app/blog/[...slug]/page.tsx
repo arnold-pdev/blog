@@ -3,7 +3,10 @@ import 'katex/dist/katex.css'
 
 import PageTitle from '@/components/PageTitle'
 import { components } from '@/components/MDXComponents'
-import { MDXLayoutRenderer } from 'pliny/mdx-components'
+import { PlotlyComponent } from '@/components/PlotlyComponent'
+// import { MDXLayoutRenderer } from 'pliny/mdx-components'
+import ClientMDXContent from '@/components/ClientMDXContent'
+import { Toggle } from '@/components/Toggle'
 import { sortPosts, coreContent, allCoreContent } from 'pliny/utils/contentlayer'
 import { allBlogs, allAuthors } from 'contentlayer/generated'
 import type { Authors, Blog } from 'contentlayer/generated'
@@ -113,7 +116,8 @@ export default async function Page({ params }: { params: { slug: string[] } }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Layout content={mainContent} authorDetails={authorDetails} next={next} prev={prev}>
-        <MDXLayoutRenderer code={post.body.code} components={components} toc={post.toc} />
+        {/* <MDXLayoutRenderer code={post.body.code} components={{ ...components, Toggle, PlotlyComponent }} toc={post.toc} /> */}
+        <ClientMDXContent code={post.body.code} />
       </Layout>
     </>
   )

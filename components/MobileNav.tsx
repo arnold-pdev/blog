@@ -5,6 +5,7 @@ import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'bo
 import { Fragment, useState, useEffect, useRef } from 'react'
 import Link from './Link'
 import headerNavLinks from '@/data/headerNavLinks'
+import AnimatedIcon from './AnimatedIcon'
 
 const MobileNav = () => {
   const [navShow, setNavShow] = useState(false)
@@ -15,7 +16,6 @@ const MobileNav = () => {
       if (status) {
         enableBodyScroll(navRef.current)
       } else {
-        // Prevent scrolling
         disableBodyScroll(navRef.current)
       }
       return !status
@@ -24,7 +24,7 @@ const MobileNav = () => {
 
   useEffect(() => {
     return clearAllBodyScrollLocks
-  })
+  }, [])
 
   return (
     <>
@@ -72,16 +72,38 @@ const MobileNav = () => {
                 ref={navRef}
                 className="mt-8 flex h-full basis-0 flex-col items-start overflow-y-auto pl-12 pt-2 text-left"
               >
-                {headerNavLinks.map((link) => (
-                  <Link
-                    key={link.title}
-                    href={link.href}
-                    className="mb-4 py-2 pr-4 text-2xl font-bold tracking-widest text-gray-900 outline outline-0 hover:text-primary-500 dark:text-gray-100 dark:hover:text-primary-400"
-                    onClick={onToggleNav}
-                  >
-                    {link.title}
-                  </Link>
-                ))}
+                {headerNavLinks.map((link) => {
+                  const [isHovered, setIsHovered] = useState(false)
+
+                  return (
+                    <div
+                      key={link.title}
+                      className="flex items-center mb-4 group"
+                      onMouseEnter={() => setIsHovered(true)}
+                      onMouseLeave={() => setIsHovered(false)}
+                    >
+                      <Link
+                        href={link.href}
+                        className="py-2 pr-4 text-2xl font-bold tracking-widest text-gray-900 outline outline-0 hover:text-primary-500 dark:text-gray-100 dark:hover:text-primary-400"
+                        onClick={onToggleNav}
+                      >
+                        <div className="flex items-center gap-2">
+                          {link.icons && (
+                            <AnimatedIcon
+                              isHovered={isHovered}
+                              icons={link.icons}
+                              duration={link.duration}
+                              alt={`${link.title} icon`}
+                              width={24}
+                              height={24}
+                            />
+                          )}
+                          {link.title}
+                        </div>
+                      </Link>
+                    </div>
+                  )
+                })}
               </nav>
 
               <button
